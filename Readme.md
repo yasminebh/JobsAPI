@@ -9,3 +9,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 
 #frontend coming soon with demo user to try it out
+
+#using Fake Data with Mackaroo
+#populate the mockdata in populate js
+# invoke populate : cmd : node populate
