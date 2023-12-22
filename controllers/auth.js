@@ -5,14 +5,23 @@ const { BadRequestError, UnauthenticatedError } = require("../errors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
- 
- 
 const register = async (req, res) => {
-  const newUser = new UserModel(req.body);
-  console.log(newUser);
-  await newUser.save();
-  const token = newUser.createJWT();
-  res.status(StatusCodes.CREATED).json({ user: { name: newUser.name }, token });
+  const user = new UserModel(req.body);
+  console.log(user);
+  await user.save();
+  const token = user.createJWT();
+  //res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
+  res
+    .status(StatusCodes.CREATED)
+    .json({
+      user: {
+        email: user.email,
+        lastName: user.lastName,
+        location: user.location,
+        name: user.name,
+        token,
+      },
+    });
 };
 
 const login = async (req, res) => {
@@ -29,10 +38,49 @@ const login = async (req, res) => {
     throw new UnauthenticatedError("wrong password");
   }
   const token = user.createJWT();
-  res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+  res.status(StatusCodes.OK).json({
+    user: {
+      email: user.email,
+      lastName: user.lastName,
+      location: user.location,
+      name: user.name,
+      token,
+    },
+  });
 };
+
+const updateUser = async (req,res) =>{
+  const {email, name, lastName, location} = req.body;
+  if(!email || !name || !lastName || !location) {
+    throw new BadRequestError("all fields must be filled ")
+  }
+
+  const user = await UserModel.findOne({_id: req.user.userId})
+
+  user.email= email
+  user.lastName = lastName
+  user.name = name
+  user.location = location
+  await user.save()
+  // we create new token because we use name in the payload which can be changed
+  const token = user.createJWT()
+  res
+    .status(StatusCodes.CREATED)
+    .json({
+      user: {
+        email: user.email,
+        lastName: user.lastName,
+        location: user.location,
+        name: user.name,
+        token,
+      },
+    });
+
+
+}
 
 module.exports = {
   register,
   login,
+  updateUser
 };
