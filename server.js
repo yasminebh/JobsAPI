@@ -7,10 +7,11 @@ require('dotenv').config()
 const path = require('path')
 //extra security packages 
 
+
 const helmet = require('helmet')
 const app = express()
 
-
+app.set('trust proxy', 1)
 app.use(express.static(path.resolve(__dirname,'./client/build')))
 app.use(helmet())
 
