@@ -6,9 +6,11 @@ const  {
   getAllJobs,
   getOneJob,
   updateJob,
-  deleteJob
+  deleteJob,
+  showStats
 }= require('../controllers/jobs')
 
+route.get('/stats', showStats)
 
 route.post('/',testUser, createJob)
 route.get('/', getAllJobs)
