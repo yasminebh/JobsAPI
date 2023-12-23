@@ -170,7 +170,7 @@ let monthlyApplications = await Job.aggregate([
     .year(year)
     .format("MMM Y");
     return {date, count}
-  })
+  }).reverse()
   console.log(monthlyApplications),
 
 
